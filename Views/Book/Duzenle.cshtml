@@ -1,0 +1,60 @@
+﻿@model Kutuphane.Models.Book
+@{
+    ViewData["Title"] = "Kitap Düzenle";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 shadow p-4 bg-white rounded">
+            <h3 class="mb-4 text-center">📝 Kitap Bilgilerini Düzenle</h3>
+
+            <form action="/Book/Duzenle" method="post">
+                <input type="hidden" name="BookId" value="@Model.BookId" />
+
+                <div class="mb-3">
+                    <label class="form-label">Kitap Adı</label>
+                    <input type="text" name="BookName" value="@Model.BookName" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Yazar Adı</label>
+                    <input type="text" name="BookAuthor" value="@Model.BookAuthor" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Sayfa Sayısı</label>
+                    <input type="number" name="BookPage" value="@Model.BookPage" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label"><i class="bi bi-image"></i> Kitap Kapak Resmi (URL)</label>
+                    <input type="url" class="form-control" name="BookImageUrl" value="@Model.BookImageUrl">
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Kitap Konumu (Raf / Sıra)</label>
+                    <select name="LocationId" class="form-select" required>
+                        <option value="">-- Konum Seçin --</option>
+                        @if (ViewBag.Konumlar != null)
+                        {
+                            foreach (var konum in ViewBag.Konumlar)
+                            {
+                                if (konum.Id == Model.LocationId)
+                                {
+                                    // Eğer eşitse, selected özniteliğiyle basıyoruz kanka
+                                    <option value="@konum.Id" selected>Raf: @konum.raf - Sıra: @konum.sira</option>
+                                }
+                                else
+                                {
+                                    // Eşit değilse, normal basıyoruz
+                                    <option value="@konum.Id">Raf: @konum.raf - Sıra: @konum.sira</option>
+                                }
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between">
+                    <a href="/Home/Index" class="btn btn-secondary">İptal</a>
+                    <button type="submit" class="btn btn-warning">Değişiklikleri Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

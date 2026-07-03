@@ -1,0 +1,55 @@
+﻿@{
+    ViewData["Title"] = "Yeni Kitap Ekle";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 shadow p-4 bg-white rounded">
+            <h3 class="mb-4 text-center fw-bold text-dark"><i class="bi bi-journal-plus text-primary"></i> Yeni Kitap Ekle</h3>
+
+            <form action="/Book/Ekle" method="post">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Kitap Adı</label>
+                    <input type="text" name="BookName" class="form-control" placeholder="Örn: Nutuk" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Yazar Adı</label>
+                    <input type="text" name="BookAuthor" class="form-control" placeholder="Örn: Mustafa Kemal Atatürk" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Sayfa Sayısı</label>
+                    <input type="number" name="BookPage" class="form-control" placeholder="Örn: 544" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold"><i class="bi bi-image text-primary"></i> Kitap Kapak Resmi (URL)</label>
+                    <input type="url" class="form-control" name="BookImageUrl" placeholder="https://ornek.com/kitap-kapagi.jpg">
+                    <div class="form-text text-muted small">İnternetten bulduğun resim linkini buraya yapıştırabilirsin.</div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Kitap Konumu (Raf / Sıra)</label>
+                    <select name="LocationId" class="form-select" required>
+                        <option value="">-- Konum Seçin --</option>
+                        @if (ViewBag.Konumlar != null)
+                        {
+                            foreach (var konum in ViewBag.Konumlar)
+                            {
+                                <option value="@konum.Id">Raf: @konum.raf - Sıra: @konum.sira</option>
+                            }
+                        }
+                    </select>
+                </div>
+
+                <div class="d-flex justify-content-between mt-4">
+                    <a href="/Book/Index" class="btn btn-secondary">İptal</a>
+                    <button type="submit" class="btn btn-success shadow-sm"><i class="bi bi-check-circle"></i> Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
