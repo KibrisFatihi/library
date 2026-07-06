@@ -18,9 +18,14 @@ namespace Kutuphane.Models
         public string? LastName { get; set; }
         [Column("mTel")]
         public string? Telephone { get; set; }
-        [Column("mEMail")]
+
+        // E-POSTA FORMATI DOĞRULAMA
+        [Required(ErrorMessage = "E-posta adresi boş bırakılamaz.")]
+        [EmailAddress(ErrorMessage = "Lütfen geçerli bir e-posta adresi gir kanka (Örn: isim@domain.com).")]
+        [Column("email")]
         public string? Mail { get; set; }
 
-
+        [Column("is_deleted")]
+        public bool IsDeleted { get; set; }
     }
 }
