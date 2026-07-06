@@ -1,0 +1,47 @@
+﻿@model Kutuphane.Models.Member
+@{
+    ViewData["Title"] = "Üye Düzenle";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6 shadow p-4 bg-white rounded">
+            <h3 class="mb-4 text-center">📝 Üye Bilgilerini Düzenle</h3>
+
+            <form action="/Member/Duzenle" method="post">
+                <input type="hidden" name="Id" value="@Model.Id" />
+
+                <div class="mb-3">
+                    <label class="form-label">TC Kimlik No</label>
+                    <input type="text" name="Tc" value="@Model.Tc" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Ad</label>
+                    <input type="text" name="FirstName" value="@Model.FirstName" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Soy Ad</label>
+                    <input type="text" name="LastName" value="@Model.LastName" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">Telefon No</label>
+                    <input type="text" name="Telephone" value="@Model.Telephone" class="form-control" required />
+                </div>
+                <div class="mb-3">
+                    <label class="form-label">E Posta</label>
+                    <input type="text" name="Mail" value="@Model.Mail" class="form-control" required />
+                </div>
+              
+                            
+                        
+                    
+                
+
+                <div class="d-flex justify-content-between">
+                    <a href="/Home/Index" class="btn btn-secondary">İptal</a>
+                    <button type="submit" class="btn btn-warning">Değişiklikleri Kaydet</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>

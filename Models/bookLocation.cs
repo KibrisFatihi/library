@@ -3,7 +3,7 @@ using Postgrest.Models;
 
 namespace Kutuphane.Models
 {
-    [Table("booklocation")]
+    [Table("location")]
     public class BookLocation : BaseModel
     {
         [PrimaryKey("id", false)]

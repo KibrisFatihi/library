@@ -11,6 +11,7 @@ namespace Kutuphane.Models
 
         [Column("bookname")]
         public string? BookName { get; set; }
+        
 
         [Column("bookauthor")]
         public string? BookAuthor { get; set; }
@@ -27,5 +28,7 @@ namespace Kutuphane.Models
         public BookLocation? Location { get; set; }
         [Column("book_image_url")]
         public string? BookImageUrl { get; set; }
+        [Column("stock_count")]
+        public int? Stock { get; set; }
     }
 }
