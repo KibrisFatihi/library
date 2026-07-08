@@ -1,7 +1,7 @@
 ﻿using Kutuphane.Attributes;
 using Postgrest.Attributes;
 using Postgrest.Models;
-using System.ComponentModel.DataAnnotations; // Validation için ŞART kanka
+using System.ComponentModel.DataAnnotations; // Validation için ŞART 
 
 namespace Kutuphane.Models
 {
@@ -12,7 +12,7 @@ namespace Kutuphane.Models
         public int Id { get; set; }
 
         [Required(ErrorMessage = "TC Kimlik numarası boş bırakılamaz kanka.")]
-        [TcKimlikNo] 
+        [TcKimlikNo]
         [Column("mTC")]
         public string? Tc { get; set; }
 
@@ -32,11 +32,17 @@ namespace Kutuphane.Models
 
         // E-POSTA FORMATI DOĞRULAMA
         [Required(ErrorMessage = "E-posta adresi boş bırakılamaz.")]
-        [EmailAddress(ErrorMessage = "Lütfen geçerli bir e-posta adresi gir kanka (Örn: isim@domain.com).")]
+        [EmailAddress(ErrorMessage = "Lütfen geçerli bir e-posta adresi gir (Örn: isim@domain.com).")]
         [Column("email")]
         public string? Mail { get; set; }
 
         [Column("is_deleted")]
         public bool IsDeleted { get; set; }
-    }
-}
+
+    
+    [Column("password")]
+        public string? Password { get; set; }
+
+        [Column("role")]
+        public string Role { get; set; } = "Member";
+} }

@@ -1,0 +1,124 @@
+﻿@model List<Kutuphane.Models.Readingbook>
+
+@{
+    ViewData["Title"] = "Üzerimdeki Kitaplar";
+}
+
+<link rel="stylesheet" href="/css/dashboard.css" asp-append-version="true" />
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="premium-dashboard py-5" style="min-height: 100vh;">
+    <div class="blur-circle circle-1"></div>
+    <div class="blur-circle circle-2"></div>
+
+    <div class="container relative-content">
+
+        <div class="dashboard-header d-flex justify-content-between align-items-center mb-4 animate-fade-in">
+            <h2 class="fw-extrabold text-white m-0 d-flex align-items-center gap-3">
+                <a href="/MemberDashboard/Index" class="btn btn-glass btn-sm rounded-pill px-3">
+                    <i class="bi bi-house"></i> Panel Ana Menü
+                </a>
+                <span class="logo-box bg-success shadow-success">
+                    <i class="bi bi-journal-bookmark-fill text-white"></i>
+                </span>
+                <span>Ödünç Durum Paneli</span>
+            </h2>
+        </div>
+
+        <div class="hero-glass-card p-4 rounded-4 shadow-lg border-0 animate-slide-up overflow-hidden" style="background: rgba(15, 23, 42, 0.45);">
+            <div class="table-responsive">
+                <table class="table align-middle custom-premium-table m-0">
+                    <thead>
+                        <tr>
+                            <th style="width: 100px;">İşlem ID</th>
+                            <th>Kitap Adı</th>
+                            <th>Yazar / Bilgi</th>
+                            <th>Alış Tarihi</th>
+                            <th>Tahmini Teslim Tarihi</th>
+                            <th>Son Teslim Tarihi</th>
+                            <th class="text-center">Kalan Süre / Durum</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var odunc in Model)
+                            {
+                                //  teslim tarihi formülünü tam sabitledik: Alış + 14 Gün
+                                DateTime sonTeslimTarihi = odunc.BorrowDate.AddDays(14);
+                                bool geciktiMi = !odunc.IsReturned && sonTeslimTarihi < DateTime.Now;
+                                int kalanGun = (sonTeslimTarihi.Date - DateTime.Now.Date).Days;
+
+                                <tr class="@(geciktiMi ? "table-danger-neon" : "")">
+                                    <td class="fw-bold text-accent">#@odunc.Id</td>
+
+                                    <td class="text-white fw-semibold">
+                                        @(odunc.Book != null ? odunc.Book.BookName : $"Kitap ID: {odunc.BookId}")
+                                    </td>
+
+                                    <td class="text-light opacity-75">
+                                        @(odunc.Book != null ? odunc.Book.BookAuthor : "Siber Arşiv")
+                                    </td>
+
+                                    <td class="text-muted small">
+                                        @odunc.BorrowDate.ToString("dd MMMM yyyy")
+                                    </td>
+                                    <td class="text-muted small">
+                                        @(odunc?.DueDate != null ? odunc.DueDate.Value.ToString("dd MMMM yyyy") : "-")
+                                    </td>
+                                    
+
+                                    <td class="fw-medium @(geciktiMi ? "text-danger fw-bold" : "text-warning")">
+                                        @sonTeslimTarihi.ToString("dd.MM.yyyy")
+                                    </td>
+
+                                    <td class="text-center">
+                                        @if (geciktiMi)
+                                        {
+                                            <span class="badge bg-danger-soft text-danger border border-danger border-opacity-25 px-3 py-2 rounded-pill fw-bold animate-pulse" style="animation: pulse 1.5s infinite;">
+                                                <i class="bi bi-exclamation-octagon-fill"></i> Süresi Geçti (@Math.Abs(kalanGun) Gün Gecikme!)
+                                            </span>
+                                        }
+                                        else if (kalanGun <= 3)
+                                        {
+                                            <span class="badge bg-warning-soft text-warning border border-warning border-opacity-25 px-3 py-2 rounded-pill fw-bold">
+                                                <i class="bi bi-clock-fill"></i> Son @kalanGun Gün! Hemen Getir 
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-success-soft text-success border border-success border-opacity-25 px-3 py-2 rounded-pill fw-bold">
+                                                <i class="bi bi-check-circle-fill"></i> @kalanGun Gün Kaldı, Keyifli Okumalar
+                                            </span>
+                                        }
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-secondary py-5">
+                                    <div class="logo-box mx-auto mb-3" style="width: 55px; height: 55px; font-size: 1.5rem; background: linear-gradient(135deg, #10b981, #059669);">
+                                        <i class="bi bi-emoji-smile-fill text-white"></i>
+                                    </div>
+                                    <h5 class="text-white fw-bold mb-1">Üzerinde Kitap Yok !</h5>
+                                    <p class="text-muted small mb-0">Şu an kütüphaneden aldığın aktif bir ödünç kitap kaydı bulunmuyor.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-4 animate-fade-in">
+            <a href="/MemberDashboard/Index" class="btn btn-glass btn-sm px-4 rounded-pill text-white border-secondary">
+                <i class="bi bi-arrow-left"></i> Modüllere Geri Dön
+            </a>
+        </div>
+    </div>
+</div>

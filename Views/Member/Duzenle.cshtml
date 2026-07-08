@@ -2,7 +2,10 @@
 @{
     ViewData["Title"] = "Üye Düzenle";
 }
-
+<div class="premium-dashboard py-5">
+    <div class="blur-circle circle-1"></div>
+    <div class="blur-circle circle-2"></div>
+    <div class="blur-circle circle-3"></div>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 shadow p-4 bg-white rounded">
@@ -23,6 +26,43 @@
                     <label class="form-label">Soy Ad</label>
                     <input type="text" name="LastName" value="@Model.LastName" class="form-control" required />
                 </div>
+                    @if (TempData["SuccessMessage"] != null)
+                    {
+                        <div class="alert alert-success border-0 bg-success bg-opacity-25 text-white mb-3 shadow-sm">
+                            <i class="fas fa-check-circle me-2"></i> @TempData["SuccessMessage"]
+                        </div>
+                    }
+
+                    <div class="mb-3">
+                        <label class="text-white fw-bold mb-2">🔒 Üye Şifresi:</label>
+                        <div class="input-group">
+                            <input type="password"
+                                   name="Password"
+                                   value="@Model.Password"
+                                   class="form-control bg-dark text-muted border-secondary"
+                                   readonly />
+
+                            <a href="@Url.Action("SifreSifirla", "Member", new { id = Model.Id })"
+                               class="btn btn-warning fw-bold text-dark"
+                               onclick="return confirm('Bu üyenin şifresini  sıfırlamak istediğine emin misiniz?');">
+                                <i class="fas fa-sync-alt me-1"></i> Şifreyi Sıfırla
+                            </a>
+                        </div>
+                        <small class="text-muted">Güvenlik gereği üye şifresi kriptolu tutulmaktadır kanka. Elle müdahale edilemez.</small>
+                    </div>
+                     <div class="mb-3">
+                        <label class="form-label fw-semibold">Rol</label>
+                        <select name="Role" class="form-select" required>
+                            <option value="">-- Rol Seçin --</option>
+                            @if (ViewBag.Roller != null)
+                            {
+                                foreach (var rol in ViewBag.Roller)
+                                {
+                                    <option value="@rol" selected="@(Model.Role == rol ? "selected" : null)">@rol</option>
+                                }
+                            }
+                        </select>
+                    </div>
                 <div class="mb-3">
                     <label class="form-label">Telefon No</label>
                     <input type="text" name="Telephone" value="@Model.Telephone" class="form-control" required />
@@ -44,4 +84,5 @@
             </form>
         </div>
     </div>
+</div>
 </div>

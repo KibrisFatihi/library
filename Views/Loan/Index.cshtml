@@ -4,70 +4,163 @@
     ViewData["Title"] = "Ödünç Verilen Kitaplar";
 }
 
+<link rel="stylesheet" href="/css/dashboard.css" asp-append-version="true" />
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
-<div class="container mt-5">
-    <div class="d-flex justify-content-between align-items-center mb-4">
-        <h2 class="fw-bold text-dark">
-            <i class="bi bi-book-half text-primary"></i> Ödünç Verilen Kitap Listesi
-        </h2>
-        <a href="/Loan/KitapVer" class="btn btn-primary shadow-sm">
-            <i class="bi bi-journal-arrow-up"></i> Yeni Kitap Ödünç Ver
+<div class="premium-dashboard py-5">
+    <div class="blur-circle circle-1"></div>
+    <div class="blur-circle circle-2"></div>
+
+    <div class="container relative-content">
+
+        <div class="dashboard-header d-flex justify-content-between align-items-center mb-4 animate-fade-in">
+            <h2 class="fw-extrabold text-white m-0 d-flex align-items-center gap-3">
+                <a href="/Home/Index" class="btn btn-green btn-sm ">
+            <i class="bi bi-house"></i> Ana Menü
         </a>
-    </div>
+                <span class="logo-box bg-warning shadow-warning">
+                    <i class="bi bi-arrow-left-right"></i>
+                </span>
+                <span>Ödünç Verilen Kitaplar</span>
+            </h2>
+            <a href="/Loan/KitapVer" class="btn btn-neon px-4 rounded-pill fw-semibold">
+                <i class="bi bi-journal-arrow-up"></i> Yeni Ödünç Ver
+            </a>
+        </div>
 
-    <table class="table table-bordered table-striped shadow-sm bg-white rounded align-middle">
-        <thead class="table-dark">
-            <tr>
-                <th>İşlem ID</th>
-                <th>Kitap Adı</th>
-                <th>Teslim Alan Üye</th>
-                <th>Veriliş Tarihi</th>
-                <th>Tahmini İade Tarihi</th>
-                <th>Durum</th>
-                <th class="text-center">İşlemler</th>
-            </tr>
-        </thead>
-        <tbody>
-            @if (Model != null && Model.Any())
-            {
-                foreach (var odunc in Model)
-                {
-                    <tr>
-                        <td class="fw-bold text-secondary">#@odunc.Id</td>
+        <div class="hero-glass-card p-4 rounded-4 shadow-lg border-0 animate-slide-up overflow-hidden">
+            <div class="table-responsive">
+                <table class="table align-middle custom-premium-table m-0">
+                    <thead>
+                        <tr>
+                            <th>İşlem ID</th>
+                            <th>Kitap Adı</th>
+                            <th>Teslim Alan Üye</th>
+                            <th>Tahmini Teslim Tarihi</th>
+                            
+                            <th>Son Teslim Tarihi</th>
+                            <th>Durum</th>
+                            <th class="text-center">İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var odunc in Model)
+                            {
+                                // KANKA SİHİRLİ DOKUNUŞ: Veritabanında due_date olmadığı için,
+                                // BorrowDate üzerine kod içinde +14 gün ekleyerek teslim tarihini dinamik hesaplıyoruz.
+                                DateTime sonTeslimTarihi = odunc.BorrowDate.AddDays(14);
+                                bool geciktiMi = !odunc.IsReturned && sonTeslimTarihi < DateTime.Now;
 
-                        <td>@(odunc.Book != null ? odunc.Book.BookName : $"Kitap ID: {odunc.BookId}")</td>
-                        <td>@(odunc.Member != null ? $"{odunc.Member.FirstName} {odunc.Member.LastName}" : $"Üye ID: {odunc.MemberId}")</td>
+                                <tr class="@(geciktiMi ? "table-danger-neon" : "")">
+                                    <td class="fw-bold text-accent">#@odunc.Id</td>
 
-                        <td>@DateTime.Now.ToString("dd.MM.yyyy")</td> @* Geçici veya veritabanındaki borrow_date alanı *@
-                        <td>@(odunc.ReturnDate.HasValue ? odunc.ReturnDate.Value.ToString("dd.MM.yyyy") : "-")</td>
+                                    <td class="text-white fw-semibold">
+                                        @(odunc.Book != null ? odunc.Book.BookName : $"Kitap ID: {odunc.BookId}")
+                                    </td>
 
-                        <td>
-                            <span class="badge bg-warning text-dark">Okuyucuda</span>
-                        </td>
-                        <td class="text-center">
-                            <a href="/Loan/ReturnBook/@odunc.Id" class="btn btn-sm btn-success" onclick="return confirm('Bu kitabın iade edildiğini onaylıyor musun kanka?')">
-                                <i class="bi bi-journal-check"></i> İade Al
-                            </a>
-                        </td>
-                    </tr>
-                }
-            }
-            else
-            {
-                <tr>
-                    <td colspan="7" class="text-center text-muted py-4">
-                        <i class="bi bi-info-circle fs-3 d-block mb-2 text-info"></i>
-                        Şu anda dışarıda (ödünçte) olan herhangi bir kitap bulunmuyor kanka.
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+                                    <td class="text-light">
+                                        @(odunc.Member != null ? $"{odunc.Member.FirstName} {odunc.Member.LastName}" : $"Üye ID: {odunc.MemberId}")
+                                    </td>
+                                    <td class="text-light">
+                                        @(odunc?.DueDate != null ? odunc.DueDate.Value.ToString("dd.MM.yyyy") : "Tarih Seçilmedi")
+                                    </td>
 
-    <div class="mt-4">
-        <a href="/Home/Index" class="btn btn-outline-secondary btn-sm">
-            <i class="bi bi-arrow-left"></i> Modüllere Geri Dön
-        </a>
+                                    <td class="fw-medium @(geciktiMi ? "text-danger" : "text-secondary")">
+                                        @sonTeslimTarihi.ToString("dd.MM.yyyy")
+                                    </td>
+
+                                    <td>
+                                        @if (geciktiMi)
+                                        {
+                                            <span class="badge bg-danger-soft text-danger border border-danger border-opacity-25 animate-pulse-red px-3 py-2 rounded-pill fw-bold">
+                                                <i class="bi bi-exclamation-triangle-fill"></i> Gecikmiş Emanet
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="badge bg-warning-soft text-warning border border-warning border-opacity-25 px-3 py-2 rounded-pill fw-bold">
+                                                <i class="bi bi-clock-history"></i> Okuyucuda
+                                            </span>
+                                        }
+                                    </td>
+
+                                    <td class="text-center">
+                                        <a href="/Loan/ReturnBook/@odunc?.Id" class="btn btn-glass btn-sm rounded-pill px-3 fw-semibold text-success border-success border-opacity-25" onclick="return confirm('Bu kitabın iade edildiğini onaylıyor musun kanka?')">
+                                            <i class="bi bi-journal-check"></i> İade Al
+                                        </a>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="6" class="text-center text-secondary py-5">
+                                    <i class="bi bi-info-circle fs-2 d-block mb-3 text-info"></i>
+                                    <span class="fw-medium">Şu anda dışarıda (ödünçte) olan herhangi bir kitap bulunmuyor kanka.</span>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="mt-4 animate-fade-in">
+            <a href="/Home/Index" class="btn btn-glass btn-sm px-4 rounded-pill">
+                <i class="bi bi-arrow-left"></i> Modüllere Geri Dön
+            </a>
+        </div>
     </div>
 </div>
+
+<style>
+    .custom-premium-table {
+        color: #e2e8f0;
+    }
+
+        .custom-premium-table thead tr th {
+            background: rgba(255, 255, 255, 0.02) !important;
+            color: #94a3b8 !important;
+            font-weight: 700;
+            text-transform: uppercase;
+            font-size: 0.75rem;
+            letter-spacing: 0.05em;
+            border-bottom: 2px solid rgba(255, 255, 255, 0.08) !important;
+            padding: 15px;
+        }
+
+        .custom-premium-table tbody tr td {
+            padding: 18px 15px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.04) !important;
+        }
+
+        .custom-premium-table tbody tr {
+            transition: background-color 0.2s ease;
+        }
+
+            .custom-premium-table tbody tr:hover {
+                background-color: rgba(255, 255, 255, 0.01);
+            }
+
+    .text-accent {
+        color: #00d2ff;
+    }
+
+    .shadow-warning {
+        box-shadow: 0 0 20px rgba(245, 158, 11, 0.3) !important;
+    }
+
+    .bg-danger-soft {
+        background: rgba(220, 53, 69, 0.1);
+    }
+
+    .bg-warning-soft {
+        background: rgba(245, 158, 11, 0.1);
+    }
+</style>

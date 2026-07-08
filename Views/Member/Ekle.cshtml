@@ -2,19 +2,29 @@
 @{
     ViewData["Title"] = "Yeni Üye Ekle";
 }
+@if (ViewBag.Error != null)
+{
+    <div class="p-3 mb-4 rounded-3 border border-danger border-opacity-50 text-danger fw-semibold"
+         style="background: rgba(220, 53, 69, 0.1); backdrop-filter: blur(5px);">
+        <i class="fas fa-bug me-2"></i> @ViewBag.Error
+    </div>
+}
 
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
-
+<div class="premium-dashboard py-5">
+    <div class="blur-circle circle-1"></div>
+    <div class="blur-circle circle-2"></div>
+    <div class="blur-circle circle-3"></div>
 <div class="container mt-5">
     <div class="row justify-content-center">
         <div class="col-md-6 shadow p-4 bg-white rounded">
-            <h3 class="mb-4 text-center fw-bold text-dark"><i class="bi bi-journal-plus text-primary"></i> Yeni Kitap Ekle</h3>
+            <h3 class="mb-4 text-center fw-bold text-dark"><i class="bi bi-journal-plus text-primary"></i> Yeni Üye Ekle</h3>
 
             <form action="/Member/Ekle" method="post">
                 <div class="mb-3">
                     <label class="form-label fw-bold">TC Kimlik No</label>
                     <input type="text" id="Tc" name="Tc" value="@Model?.Tc" class="form-control" placeholder="11 haneli TC giriniz"
-                           maxlength="11" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                           maxlength="11" onkeypress="returnevent.charCode >= 48 && returnevent.charCode <= 57" />
                     <span asp-validation-for="Tc" class="text-danger small"></span>
                 </div>
                 <div class="mb-3">
@@ -26,10 +36,26 @@
                     <label class="form-label fw-semibold">Soyad</label>
                     <input type="text" name="LastName" class="form-control" placeholder="Örn: Atatürk" required />
                 </div>
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold">Şifre</label>
+                        <input type="text" name="Password" class="form-control" placeholder="Örn: Admin123" required />
+                    </div> <div class="mb-3">
+                        <label class="form-label fw-semibold">Rol</label>
+                        <select name="Role" class="form-select" required>
+                            <option value="">-- Rol Seçin --</option>
+                            @if (ViewBag.Roller != null)
+                            {
+                                foreach (var rol in ViewBag.Roller)
+                                {
+                                    <option value="@rol">@rol</option>
+                                }
+                            }
+                        </select>
+                    </div>
                 <div class="mb-3">
                     <label class="form-label fw-bold">Telefon Numarası</label>
                     <input type="tel" id="Telephone" name="Telephone" value="@Model?.Telephone" class="form-control" placeholder="05XXXXXXXXX" 
-                    maxlength="11" onkeypress="return event.charCode >= 48 && event.charCode <= 57" />
+                    maxlength="11" onkeypress="returnevent.charCode >= 48 && returnevent.charCode <= 57" />
                     <span asp-validation-for="Telephone" class="text-danger small"></span>
                 </div>
                 <div class="mb-3">
@@ -49,4 +75,5 @@
             </form>
         </div>
     </div>
+</div>
 </div>

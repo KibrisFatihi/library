@@ -1,197 +1,179 @@
 ﻿using Kutuphane.Models;
 using Microsoft.AspNetCore.Mvc;
-using System.Security.Cryptography.X509Certificates;
-
+using kutuphane.Services;
+using System.Threading.Tasks;
+using System.Collections.Generic;
+using Microsoft.AspNetCore.Authorization;
 
 namespace kutuphane.Controllers
 {
-
+    [Authorize(Roles = "Admin")]
     public class MemberController : Controller
     {
-        private readonly Supabase.Client _supabaseClient;
+        private readonly MemberService _memberService;
 
-        public MemberController(Supabase.Client supabaseClient)
+        public MemberController(MemberService memberService)
         {
-            _supabaseClient = supabaseClient;
+            _memberService = memberService;
         }
 
         public async Task<IActionResult> Index()
         {
-            try
-            {
-                // Supabase'den silinmemiş (aktif) üye çekiyoruz
-                var response = await _supabaseClient.From<Member>()
-                    .Where(x => x.IsDeleted == false)
-                    .Get();
-
-                var member = response.Models;
-               
-
-                // Views/Member/Index.cshtml sayfasına verileri gönderiyoruz kanka
-                return View(member);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Üye listesi çekilirken hata oluştu: " + ex.Message);
-                return View(new List<Member>());
-            }
+            var üyeler = await _memberService.GetActiveMembersAsync();
+            return View(üyeler);
         }
-        // 1. Yeni üye ekleme sayfasını açan fonksiyon (GET)
+
         [HttpGet]
         public IActionResult Ekle()
         {
-            try
-            {
-                return View();
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Ekle sayfasında hata oluştu: " + ex.Message);
-                return View();
-            }
+            ViewBag.Roller = new List<string> { "Member", "Admin" };
+            return View();
         }
 
-        // 2. Formdan gelen yeni üye kaydeden fonksiyon (POST)
         [HttpPost]
         public async Task<IActionResult> Ekle(Member yeniUye)
         {
-            if (!ModelState.IsValid)
-            {
-                return View(yeniUye); // Girilen verileri kaybetmeden sayfaya geri gönderir
-            }
             try
             {
-                yeniUye.IsDeleted = false; // Yeni üye silinmemiş olarak başlar
-                await _supabaseClient.From<Member>().Insert(yeniUye);
+                // 1. Adım: [TcKimlikNo] model doğrulaması geçerli mi kontrol et
+                if (!ModelState.IsValid)
+                {
+                    var ilkHata = ModelState.Values.SelectMany(v => v.Errors).FirstOrDefault()?.ErrorMessage;
+                    ViewBag.Error = ilkHata ?? "Bilgileri kontrol ediniz.";
+                    ViewBag.Roller = new List<string> { "Member", "Admin" };
+                    return View(yeniUye);
+                }
+
+                // 2. Adım: Servisteki hazır şifre ve T.C. kontrol iş motorunu çalıştır
+                // Bu metot şifre uzunluğunu kontrol eder, hash'ler ve veritabanına doğrudan kaydeder.
+                var hataMesaji = await _memberService.RegisterNewMemberAsync(yeniUye);
+
+                // 3. Adım: Eğer servisten şifre uzunluğu veya mükerrerlikle ilgili bir engel döndüyse yakala
+                if (hataMesaji != null)
+                {
+                    ViewBag.Error = hataMesaji;
+                    ViewBag.Roller = new List<string> { "Member", "Admin" };
+                    return View(yeniUye);
+                }
+
+                // İşlem tamamen başarılıysa ana listeye yönlendir
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Kitap eklenirken hata: " + ex.Message);
-                return RedirectToAction("Index");
+                ViewBag.Error = "Üye eklenirken bir hata oluştu: " + ex.Message;
+                ViewBag.Roller = new List<string> { "Member", "Admin" };
+                return View(yeniUye);
             }
         }
 
-        // 3. Yazılımsal Silme (Soft Delete) Fonksiyonu
+
+
+
         [HttpGet("Member/Sil/{id}")]
         public async Task<IActionResult> Sil(int id)
         {
-            try
-            {
-                var response = await _supabaseClient.From<Member>().Where(x => x.Id == id).Get();
-                var mevcutUye = response.Models.FirstOrDefault();
-
-                if (mevcutUye != null)
-                {
-                    mevcutUye.IsDeleted = true;
-                    await _supabaseClient.From<Member>().Update(mevcutUye);
-                }
-
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Soft Delete Hatası: " + ex.Message);
-                return RedirectToAction("Index");
-            }
+            await _memberService.SoftDeleteMemberAsync(id);
+            return RedirectToAction("Index");
         }
 
-        // 4. Düzenleme sayfasını açan fonksiyon (GET)
         [HttpGet("Member/Duzenle/{id}")]
         public async Task<IActionResult> Duzenle(int id)
         {
-            try
-            {
-                var response = await _supabaseClient.From<Member>().Where(x => x.Id == id).Get();
-                var mevcutUye = response.Models.FirstOrDefault();
-                if (mevcutUye != null)
-                {
-                    return View(mevcutUye);
-                }
-                else
-                {
-                    return RedirectToAction("Index");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Düzenleme sayfası açılırken hata: " + ex.Message);
-                return RedirectToAction("Index");
-            }
+            ViewBag.Roller = new List<string> { "Member", "Admin" };
+
+            var uye = await _memberService.GetMemberByIdAsync(id);
+            if (uye == null) return RedirectToAction("Index");
+            return View(uye);
         }
 
-
-        // 5. Formdan gelen güncel verileri Supabase'e kaydeden fonksiyon (POST)
         [HttpPost]
-        public async Task<IActionResult> Duzenle(Member guncelKitap)
+        public async Task<IActionResult> Duzenle(Member guncelUye)
         {
             try
             {
-                guncelKitap.IsDeleted = false;
-                await _supabaseClient.From<Member>().Update(guncelKitap);
+                // 🚨 EN KRİTİK ADMİN DÜZENLEME ÖNLEMİ:
+                // Admin bir üyeyi düzenlerken şifresini değiştirdiyse veya değiştirmeden kaydettiyse durumuna bakıyoruz.
+                if (!string.IsNullOrEmpty(guncelUye.Password))
+                {
+                    // Eğer şifre alanı dolu geldiyse, girilen yeni şifreyi SHA256 ile hash'leyip öyle kaydediyoruz kanka!
+                    // Eğer şifre zaten hash'liyse (veri tabanından gelen veri bozulmadan post edildiyse uzunluğu 64 karakterdir) tekrar hash'lemiyoruz.
+                    if (guncelUye.Password.Length != 64)
+                    {
+                        guncelUye.Password = PasswordHasher.ComputeSha256Hash(guncelUye.Password);
+                    }
+                }
 
+                await _memberService.UpdateMemberAsync(guncelUye);
                 return RedirectToAction("Index");
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Kitap Güncellenirken Hata Oluştu: " + ex.Message);
-                return View(guncelKitap);
+                ViewBag.Error = "Güncelleme yapılırken hata oluştu: " + ex.Message;
+                ViewBag.Roller = new List<string> { "Member", "Admin" };
+                return View(guncelUye);
             }
         }
+
         [HttpGet("Member/Arsiv")]
         public async Task<IActionResult> Arsiv()
         {
-            try
-            {
-                var response = await _supabaseClient.From<Member>().Where(x => x.IsDeleted == true).Get();
-                var silinmisUyeler = response.Models;
-                return View(silinmisUyeler);
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Arşiv sayfası açılırken hata: " + ex.Message);
-                return View(new List<Member>());
-            }
+            var arsiv = await _memberService.GetArchivedMembersAsync();
+            return View(arsiv);
         }
+
         [HttpGet("Member/GeriAl/{id}")]
         public async Task<IActionResult> GeriAl(int id)
         {
-            try
-            {
-                var response = await _supabaseClient.From<Member>().Where(x => x.Id == id).Get();
-                var mevcutUye = response.Models.FirstOrDefault();
-                if (mevcutUye != null)
-                {
-                    mevcutUye.IsDeleted = false;
-                    await _supabaseClient.From<Member>().Update(mevcutUye);
-                }
-                return RedirectToAction("Index");
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine("Soft Delete Geri Alma Hatası: " + ex.Message);
-                return RedirectToAction("Index");
-            }
+            await _memberService.RecoverMemberFromArchiveAsync(id);
+            return RedirectToAction("Index");
         }
-        [HttpGet("Member/KalıcıSil")]
-        public async Task<IActionResult> KalıcıSil(int id)
+
+        [HttpGet("Member/KaliciSil/{id}")]
+        public async Task<IActionResult> KaliciSil(int id)
+        {
+            await _memberService.HardDeleteMemberAsync(id);
+            return RedirectToAction("Arsiv");
+        }
+        [HttpGet("Member/SifreSifirla/{id}")]
+        public async Task<IActionResult> SifreSifirla(int id)
         {
             try
             {
-                var response = await _supabaseClient.From<Member>().Where(x => x.Id == id).Get();
-                var mevcutuye = response.Models.FirstOrDefault();
-                if (mevcutuye != null)
+                var uye = await _memberService.GetMemberByIdAsync(id);
+
+                if (uye != null)
                 {
-                    await _supabaseClient.From<Member>().Delete(mevcutuye);
+                    // 1. 6 haneli rastgele şifreyi ham olarak üretiyoruz kanka
+                    string hamSifre = Guid.NewGuid().ToString("N").Substring(0, 6).ToUpper();
+
+                    // 🚨 SİBER SABİTLEME: Hash motoruna göndermeden önce şifreyi tamamen KÜÇÜK harfe çekiyoruz!
+                    // Böylece Login sayfasında kullanıcı ne yazarsa yazsın hash'ler tam olarak eşleşecek .
+                    uye.Password = PasswordHasher.ComputeSha256Hash(hamSifre);
+
+                    // Veritabanını güncelliyoruz
+                    await _memberService.UpdateMemberAsync(uye);
+
+                    
+                    // Adminin ve üyenin kafa karışıklığı yaşamaması için ekranda BÜYÜK harfle gösterelim,
+                  
+                    string ekrandaGorunecekSifre = hamSifre.ToUpper();
+
+                    TempData["SuccessMessage"] = $"{uye.FirstName} {uye.LastName} için YENİ ŞİFRE: '{ekrandaGorunecekSifre}' olarak üretildi. Lütfen bunu üyeye ilet !";
                 }
-                return RedirectToAction("Arsiv");
+                else
+                {
+                    TempData["ErrorMessage"] = "Üye bulunamadı !";
+                }
             }
             catch (Exception ex)
             {
-                Console.WriteLine("Kalıcı Silme Hatası: " + ex.Message);
-                return RedirectToAction("Index");
+                TempData["ErrorMessage"] = "Şifre sıfırlanırken bir hata oluştu: " + ex.Message;
             }
+
+            return RedirectToAction("Duzenle", new { id = id });
         }
 
     }
+    
 }

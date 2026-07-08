@@ -1,0 +1,57 @@
+﻿@{
+    ViewData["Title"] = "Siber Üye Kontrol Merkezi";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="premium-dashboard py-5" style="min-height: 100vh;">
+    <div class="blur-circle circle-1"></div>
+    <div class="blur-circle circle-2"></div>
+    <div class="blur-circle circle-3"></div>
+
+    <div class="container relative-content mt-4">
+
+        <div class="row mb-5 animate-slide-up">
+            <div class="col-md-8">
+                <h1 class="text-white fw-extrabold display-6 mb-2">Selam, @ViewBag.UserName! 👋</h1>
+                <p class="text-muted fs-5">Siber Kütüphane üye kontrol merkezine hoş geldin kanka. Aktif modülleri aşağıdan yönetebilirsin.</p>
+            </div>
+            <div class="col-md-4 text-md-end align-self-center">
+                <a href="/Account/Logout" class="btn btn-neon rounded-pill px-4 py-2 fw-bold shadow">
+                    <i class="fas fa-sign-out-alt me-2"></i> Güvenli Çıkış
+                </a>
+            </div>
+        </div>
+
+        <div class="row g-4 mb-5 animate-slide-up">
+            <div class="col-md-6">
+                <div class="hero-glass-card p-4 rounded-4 border-0 shadow text-center position-relative overflow-hidden" style="border: 1px solid rgba(0, 210, 255, 0.15) !important;">
+                    <div class="logo-box mx-auto mb-3" style="width: 55px; height: 55px; font-size: 1.6rem; background: linear-gradient(135deg, #00d2ff, #0066ff);">
+                        <i class="fas fa-book-open"></i>
+                    </div>
+                    <h4 class="text-white fw-extrabold mb-2">Dijital Kitap Kataloğu</h4>
+                    <p class="text-muted small mb-4">Kütüphanedeki tüm aktif kitapları ve detaylarını gör, anlık aramalar yap kanka.</p>
+                    <a href="/MemberDashboard/Book" class="btn btn-glass w-100 py-3 rounded-3 fw-bold text-white">
+                        Kataloğu İncele <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="col-md-6">
+                <div class="hero-glass-card p-4 rounded-4 border-0 shadow text-center position-relative overflow-hidden" style="border: 1px solid rgba(16, 185, 129, 0.15) !important;">
+                    <div class="logo-box mx-auto mb-3" style="width: 55px; height: 55px; font-size: 1.6rem; background: linear-gradient(135deg, #10b981, #059669);">
+                        <i class="fas fa-history"></i>
+                    </div>
+                    <h4 class="text-white fw-extrabold mb-2">Ödünç Durum Paneli</h4>
+                    <p class="text-muted small mb-4">Şu an üzerinde olan kitapları, iade tarihleri ve kalan süre uyarılarını takip et kanka.</p>
+                    <a href="/MemberDashboard/MyLoan" class="btn btn-glass w-100 py-3 rounded-3 fw-bold text-white">
+                        Süreleri Kontrol Et <i class="fas fa-clock ms-2"></i>
+                    </a>
+                </div>
+            </div>
+        </div>
+
+ </div>       
+</div>
+

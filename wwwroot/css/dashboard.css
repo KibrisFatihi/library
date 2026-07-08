@@ -1,0 +1,458 @@
+﻿/* 📁 wwwroot/css/dashboard.css */
+
+/* BÜTÜNSEL PREMIUM TEMELLER */
+.premium-dashboard {
+    font-family: 'Plus Jakarta Sans', sans-serif;
+    background-color: #0b0f19; /* Derin Uzay Siyahı/Laciverti */
+    min-height: 100vh;
+    position: relative;
+    overflow: hidden;
+    padding-bottom: 50px;
+}
+
+/* ARKA PLAN BLUR KÜRELERİ (ANİMASYONLU NEON IŞIKLAR) */
+.blur-circle {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(130px);
+    z-index: 1;
+    opacity: 0.4;
+    animation: floatCircles 12s infinite alternate ease-in-out;
+}
+
+.circle-1 { 
+    width: 400px;
+    height: 400px;
+    background: #0d6efd;
+    top: -10%;
+    left: -10%;
+}
+
+.circle-2 {
+    width: 500px;
+    height: 500px;
+    background: #00d2ff;
+    bottom: -10%;
+    right: -5%;
+    animation-delay: -3s;
+}
+
+.circle-3 {
+    width: 300px;
+    height: 300px;
+    background: #10b981;
+    top: 40%;
+    left: 50%;
+    animation-delay: -6s;
+}
+
+.relative-content {
+    position: relative;
+    z-index: 2;
+}
+
+/* GLASSMORPHISM HEADER */
+.dashboard-header {
+    background: rgba(255, 255, 255, 0.04);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    padding: 15px 30px;
+    border-radius: 50px;
+    margin-top: 20px;
+}
+
+.brand-text {
+    color: #ffffff;
+    font-weight: 800;
+    letter-spacing: -0.5px;
+}
+
+.logo-box {
+    background: linear-gradient(135deg, #0d6efd, #00d2ff);
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: white;
+    font-size: 1.3rem;
+    box-shadow: 0 0 20px rgba(0, 210, 255, 0.4);
+}
+
+/* BUTTONS */
+.btn-glass {
+    background: rgba(255, 255, 255, 0.07);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    color: #e2e8f0;
+    transition: all 0.3s ease;
+}
+
+    .btn-glass:hover {
+        background: rgba(255, 255, 255, 0.15);
+        color: #ffffff;
+        transform: translateY(-2px);
+    }
+.btn-green {
+    /* Kanka yeşilden turkuaza doğru akan muazzam bir premium gradyan */
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    border: none;
+    color: #ffffff; /* Yazı bembeyaz olsun ki yeşilin üstünde net okunsun kanka */
+    box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3); /* Yeşil gölge parlaması */
+    transition: all 0.3s ease;
+}
+
+    .btn-green:hover {
+        box-shadow: 0 0 25px rgba(16, 185, 129, 0.6);
+        transform: translateY(-2px);
+        color: #ffffff;
+    }
+
+.btn-neon {
+    background: linear-gradient(135deg, #0d6efd 0%, #00d2ff 100%);
+    border: none;
+    color: white;
+    box-shadow: 0 4px 15px rgba(13, 110, 253, 0.3);
+    transition: all 0.3s ease;
+}
+
+
+    .btn-neon:hover {
+        box-shadow: 0 0 25px rgba(0, 210, 255, 0.6);
+        transform: translateY(-2px);
+        color: white;
+    }
+
+/* HERO GLASS CARD */
+.hero-glass-card {
+    background: rgba(255, 255, 255, 0.03);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 50px;
+    border-radius: 24px;
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+}
+
+    .hero-glass-card h1 {
+        color: #ffffff !important;
+    }
+
+    .hero-glass-card p {
+        color: #94a3b8 !important;
+    }
+
+/* NEON BADGE WITH PULSE EFEKT */
+.bg-neon-pulse {
+    background: rgba(13, 110, 253, 0.15);
+    color: #3b82f6;
+    border: 1px solid rgba(13, 110, 253, 0.3);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.pulse-dot {
+    width: 8px;
+    height: 8px;
+    background-color: #3b82f6;
+    border-radius: 50%;
+    box-shadow: 0 0 10px #3b82f6;
+    animation: pulseAnimation 1.5s infinite;
+}
+
+/* GLOWING KARTLAR */
+.glow-card {
+    background: rgba(255, 255, 255, 0.03) !important;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 24px !important;
+    transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+    .glow-card .card-title {
+        color: #ffffff !important;
+    }
+
+    .glow-card .card-text {
+        color: #94a3b8 !important;
+    }
+
+/* MODERN İKON KAFESLERİ */
+.module-icon {
+    width: 60px;
+    height: 60px;
+    border-radius: 18px;
+    font-size: 1.8rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s ease;
+}
+
+.icon-primary {
+    background: rgba(13, 110, 253, 0.1);
+    color: #3b82f6;
+    border: 1px solid rgba(13, 110, 253, 0.2);
+}
+
+.icon-success {
+    background: rgba(16, 185, 129, 0.1);
+    color: #10b981;
+    border: 1px solid rgba(16, 185, 129, 0.2);
+}
+
+.icon-warning {
+    background: rgba(245, 158, 11, 0.1);
+    color: #f59e0b;
+    border: 1px solid rgba(245, 158, 11, 0.2);
+}
+
+/* HOVER REAKSİYONLARI */
+.glow-card:hover {
+    transform: translateY(-12px);
+    background: rgba(255, 255, 255, 0.06) !important;
+}
+
+.card-primary:hover {
+    border-color: rgba(13, 110, 253, 0.4) !important;
+    box-shadow: 0 15px 35px rgba(13, 110, 253, 0.2) !important;
+}
+
+.card-success:hover {
+    border-color: rgba(16, 185, 129, 0.4) !important;
+    box-shadow: 0 15px 35px rgba(16, 185, 129, 0.2) !important;
+}
+
+.card-warning:hover {
+    border-color: rgba(245, 158, 11, 0.4) !important;
+    box-shadow: 0 15px 35px rgba(245, 158, 11, 0.2) !important;
+}
+
+.glow-card:hover .module-icon {
+    transform: scale(1.1) rotate(-5deg);
+}
+
+/* CARD FOOTER GLOW */
+.card-footer-glow {
+    border-color: rgba(255, 255, 255, 0.08) !important;
+}
+
+.footer-text {
+    color: #64748b;
+    transition: color 0.3s ease;
+}
+
+.arrow-circle {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.05);
+    color: #64748b;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    transition: all 0.3s ease;
+}
+
+.glow-card:hover .arrow-circle {
+    background: #ffffff;
+    color: #0b0f19;
+    transform: translateX(4px);
+}
+
+.glow-card:hover .footer-text {
+    color: #ffffff;
+}
+
+/* CSS ANIMASYONLARI */
+.animate-fade-in {
+    animation: fadeIn 0.8s ease-out forwards;
+}
+
+.animate-slide-up {
+    animation: slideUp 0.8s ease-out forwards;
+    animation-delay: 0.1s;
+    opacity: 0;
+}
+
+.animate-cards-up {
+    animation: slideUp 0.8s ease-out forwards;
+    animation-delay: 0.2s;
+    opacity: 0;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideUp {
+    from {
+        opacity: 0;
+        transform: translateY(30px);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes pulseAnimation {
+    0% {
+        transform: scale(0.9);
+        opacity: 0.6;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+
+    100% {
+        transform: scale(0.9);
+        opacity: 0.6;
+    }
+}
+
+@keyframes floatCircles {
+    0% {
+        transform: translateY(0) scale(1);
+    }
+
+    100% {
+        transform: translateY(40px) scale(1.1);
+    }
+}
+/* Gecikmiş kitap satırları için özel neon efekti kanka */
+.table-danger-neon {
+    background-color: rgba(220, 53, 69, 0.1) !important;
+    border-left: 4px solid #dc3545 !important;
+    color: #f87171 !important;
+}
+
+/* Yanıp sönen kırmızı uyarı ışığı animasyonu */
+.animate-pulse-red {
+    animation: pulseRed 2s infinite;
+    box-shadow: 0 0 10px rgba(220, 53, 69, 0.5);
+}
+
+@keyframes pulseRed {
+    0% {
+        transform: scale(1);
+        opacity: 1;
+    }
+
+    50% {
+        transform: scale(1.05);
+        opacity: 0.8;
+        box-shadow: 0 0 15px rgba(220, 53, 69, 0.8);
+    }
+
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+.custom-glass-input {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.08) !important;
+    color: #ffffff !important;
+    border-radius: 12px !important;
+    padding: 12px 20px !important;
+    transition: all 0.3s ease !important;
+}
+
+    .custom-glass-input:focus {
+        background: rgba(255, 255, 255, 0.07) !important;
+        border-color: #00d2ff !important;
+        box-shadow: 0 0 15px rgba(0, 210, 255, 0.3) !important;
+        color: #ffffff !important;
+    }
+
+    /* Input alanlarındaki placeholder (ipucu) yazılarını sönük beyaz yapma */
+    .custom-glass-input::placeholder {
+        color: #64748b !important;
+    }
+
+    /* Dropdown (Select) içindeki option'ların arka planını siyah yapma (Yazılar okunsun diye kanka) */
+    .custom-glass-input option {
+        background-color: #0b0f19 !important;
+        color: #ffffff !important;
+    }
+
+/* Formların üstündeki Label (Etiket) yazıları */
+.form-label-custom {
+    color: #94a3b8 !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+.form-labell {
+    color: #ffffff !important;
+    font-weight: 600;
+    font-size: 0.9rem;
+    letter-spacing: 0.5px;
+}
+.equal-height-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100%;
+    min-height: 110px;
+}
+
+/* Grafik kutusunun canvas taşmasını önleyen kesin sınır */
+.chart-container-fixed {
+    position: relative;
+    height: 280px;
+    width: 100%;
+}
+
+/* Responsive grid pürüzsüzleştirme */
+.relative-content {
+    position: relative;
+    z-index: 10;
+}
+
+/* Küçük ekranlar için metin boyutu sabitleyici */
+@media (max-width: 768px) {
+    .display-4 {
+        font-size: 2.2rem !important;
+        font-weight: 800;
+    }
+
+    .hero-glass-card {
+        padding: 2rem 1rem !important;
+    }
+
+    .chart-container-fixed {
+        height: 220px;
+    }
+}
+.feature-showcase-card {
+    transition: all 0.4s ease;
+    border: 1px solid rgba(255, 255, 255, 0.03) !important;
+}
+
+    .feature-showcase-card:hover {
+        transform: translateY(-3px);
+        border-color: rgba(255, 255, 255, 0.1) !important;
+        box-shadow: 0 15px 30px rgba(0,0,0,0.5) !important;
+    }
+.custom-premium-table {
+    background: rgba(255, 255, 255, 0.03) !important;
+    border: 1px solid rgba(255, 255, 255, 0.05) !important;
+    border-radius: 12px !important;
+    transition: all 0.3s ease;
+    color: #ffffff !important;
+}    

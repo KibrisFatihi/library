@@ -1,0 +1,126 @@
+﻿@model List<Kutuphane.Models.Book>
+
+@{
+    ViewData["Title"] = "Kitap Listesi kanka";
+}
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+<div class="premium-dashboard py-5" style="min-height: 100vh;">
+    <div class="blur-circle circle-1"></div>
+    <div class="blur-circle circle-2"></div>
+    <div class="blur-circle circle-3"></div>
+
+    <div class="container relative-content">
+
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-3 mb-5 animate-slide-up">
+            <div>
+                <h2 class="fw-extrabold text-white mb-1">
+                    <i class="bi bi-journal-text text-neon me-2"></i> Dijital Kütüphane Kataloğu
+                </h2>
+                <p class="text-muted small mb-0">Kütüphanemizde aktif olarak bulunan kitapları incele ve ara kanka.</p>
+            </div>
+
+            <a href="/MemberDashboard/Index" class="btn btn-glass btn-sm rounded-pill px-4 align-self-start">
+                <i class="bi bi-arrow-left"></i> Panel Ana Menü
+            </a>
+        </div>
+
+        <div class="hero-glass-card p-4 rounded-4 mb-4 border-0 shadow animate-slide-up">
+            <div class="row align-items-center">
+                <div class="col-lg-6">
+                    <form asp-controller="MemberDashboard" asp-action="Book" method="get" class="d-flex gap-2">
+                        <div class="input-group">
+                            <span class="input-group-text custom-glass-input border-end-0 text-muted" style="border-top-right-radius: 0 !important; border-bottom-right-radius: 0 !important;">
+                                <i class="bi bi-search"></i>
+                            </span>
+                            <input type="text"
+                                   name="searchString"
+                                   class="form-control custom-glass-input border-start-0"
+                                   style="border-top-left-radius: 0 !important; border-bottom-left-radius: 0 !important;"
+                                   placeholder="Kitap adı veya yazar ismi ara kanka..."
+                                   value="@ViewBag.CurrentFilter" />
+                        </div>
+                        <button type="submit" class="btn btn-neon px-4 fw-bold rounded-3">Ara</button>
+
+                        @if (!string.IsNullOrEmpty(ViewBag.CurrentFilter))
+                        {
+                            <a href="/MemberDashboard/Index" class="btn btn-glass rounded-3 text-white">Temizle</a>
+                        }
+                    </form>
+                </div>
+                <div class="col-lg-6 text-lg-end mt-3 mt-lg-0">
+                    <span class="text-muted small">Toplam Gösterilen Kitap: <strong class="text-white">@(Model?.Count ?? 0)</strong> adet</span>
+                </div>
+            </div>
+        </div>
+
+        <div class="hero-glass-card rounded-4 border-0 shadow overflow-hidden animate-fade-in">
+            <div class="table-responsive">
+                <table class="table custom-glass-input align-middle mb-0">
+                    <thead>
+                        <tr>
+                            <th class="text-center" style="width: 90px;">Kapak</th>
+                            <th style="width: 100px;">Kitap ID</th>
+                            <th>Kitap Adı</th>
+                            <th>Yazar</th>
+                            <th>Sayfa Sayısı</th>
+                            <th class="text-center">Raf Bilgisi</th>
+                            <th class="text-center">Sıra No</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (Model != null && Model.Any())
+                        {
+                            foreach (var kitap in Model)
+                            {
+                                <tr>
+                                    <td class="text-center">
+                                        @if (!string.IsNullOrEmpty(kitap.BookImageUrl))
+                                        {
+                                            <img src="@kitap.BookImageUrl" alt="Kapak" class="shadow-sm border border-secondary" style="width: 50px; height: 72px; object-fit: cover; border-radius: 8px;" />
+                                        }
+                                        else
+                                        {
+                                            <div class="custom-glass-input border rounded-3 d-flex align-items-center justify-content-center text-muted mx-auto" style="width: 50px; height: 72px;">
+                                                <i class="bi bi-book fs-4"></i>
+                                            </div>
+                                        }
+                                    </td>
+                                    <td class="fw-bold text-info">#@kitap.BookId</td>
+                                    <td class="text-white fw-semibold">@kitap.BookName</td>
+                                    <td class="text-light opacity-75">@kitap.BookAuthor</td>
+                                    <td><span class="text-muted">@kitap.BookPage Sayfa</span></td>
+                                    <td class="text-center">
+                                        <span class="badge btn-glass border border-secondary text-white px-3 py-2 rounded-pill">
+                                            @(kitap.Location?.Raf ?? "-")
+                                        </span>
+                                    </td>
+                                    <td class="text-center">
+                                        <span class="badge btn-glass border border-secondary text-white px-3 py-2 rounded-pill">
+                                            @(kitap.Location?.Sira ?? "-")
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td colspan="7" class="text-center py-5 text-muted">
+                                    <div class="logo-box mx-auto mb-3" style="width: 55px; height: 55px; font-size: 1.5rem; background: linear-gradient(135deg, #f59e0b, #d97706);">
+                                        <i class="bi bi-exclamation-triangle-fill"></i>
+                                    </div>
+                                    <h5 class="text-white fw-bold mb-1">Eşleşen Kitap Bulunamadı</h5>
+                                    <p class="text-muted small mb-0">Aradığın kriterlere uygun aktif bir kitap kaydı kütüphanede yok kanka.</p>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+</div>

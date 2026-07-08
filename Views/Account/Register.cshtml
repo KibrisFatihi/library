@@ -1,0 +1,154 @@
+﻿@model Kutuphane.Models.Member
+@{
+    Layout = null; // Bağımsız tam ekran premium görünüm kanka
+}
+@if (ViewBag.Error != null)
+{
+    <div class="p-3 mb-4 rounded-3 border border-danger border-opacity-50 text-danger fw-semibold"
+         style="background: rgba(220, 53, 69, 0.1); backdrop-filter: blur(5px);">
+        <i class="fas fa-bug me-2"></i> @ViewBag.Error
+    </div>
+}
+
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Siber Kütüphane - Kayıt Ol kanka</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/dashboard.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+    <style>
+        html, body {
+            background-color: #0b0f19 !important;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            margin: 0;
+            padding: 0;
+            height: 100vh;
+            width: 100%;
+            overflow: hidden; /* 🚨 KANKA: Ekranın asla kaymamasını dikte ediyoruz, scroll tamamen kapanıyor */
+        }
+
+        .relative-content {
+            position: relative;
+            z-index: 10;
+        }
+
+        /* İnput alanlarını ve form kartını dikeyde sıkıştırıp yukarı çeken kurumsal ayarlar */
+        .hero-glass-card {
+            max-width: 440px !important; /* Genişliği hafif kıstık */
+            padding: 1.5rem 2rem !important; /* İç boşlukları daralttık, form yukarı fırlasın diye */
+            background: rgba(15, 23, 42, 0.55);
+            border: 1px solid rgba(255, 255, 255, 0.05) !important;
+        }
+
+        .custom-glass-input {
+            padding: 0.5rem 0.75rem !important; /* İnput yüksekliklerini azalttık kanka */
+            font-size: 0.9rem !important;
+        }
+
+        .form-label-custom {
+            margin-bottom: 0.2rem !important; /* Yazı ile input arasını daralttık */
+            font-size: 0.85rem !important;
+        }
+
+        .mb-3 {
+            margin-bottom: 0.75rem !important; /* Elemanların alt boşluklarını yarıya indirdik kanka */
+        }
+    </style>
+</head>
+<body class="premium-dashboard">
+
+    <div class="blur-circle circle-1"></div>
+    <div class="blur-circle circle-2"></div>
+    <div class="blur-circle circle-3"></div>
+
+    <div class="container relative-content d-flex justify-content-center align-items-start pt-3" style="min-height: 100vh;">
+        <div class="hero-glass-card rounded-4 border-0 shadow-lg animate-slide-up w-100">
+
+            <div class="text-center mb-3">
+                <div class="logo-box mx-auto mb-2" style="width: 42px; height: 42px; font-size: 1.2rem; background: linear-gradient(135deg, #10b981, #059669);">
+                    <i class="bi bi-person-plus-fill"></i>
+                </div>
+                <h4 class="text-white fw-extrabold mb-0">Hesabını Oluştur</h4>
+                <p class="text-muted small mb-0" style="font-size: 0.8rem;">Sisteme üye olmak için bilgileri doldur kanka.</p>
+            </div>
+
+            <form action="/Account/Register" method="post">
+
+                <div class="mb-3">
+                    <label class="text-white fw-bold mb-2">🆔 T.C. Kimlik Numarası:</label>
+
+                    <input type="text"
+                           name="Tc"
+                           maxlength="11"
+                           placeholder="11 haneli T.C. gir kanka"
+                           class="form-control bg-dark text-white border-secondary"
+                           required />
+                </div>
+
+                <div class="row">
+                    <div class="col-6 mb-3">
+                        <label class="form-label form-label-custom">Ad</label>
+                        <input type="text" name="FirstName" class="form-control custom-glass-input" placeholder="Adın" required />
+                    </div>
+                    <div class="col-6 mb-3">
+                        <label class="form-label form-label-custom">Soyad</label>
+                        <input type="text" name="LastName" class="form-control custom-glass-input" placeholder="Soyadın" required />
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label form-label-custom">E-Posta Adresi</label>
+                    <input type="email" name="Mail" class="form-control custom-glass-input" placeholder="ornek@mail.com" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label form-label-custom">Telefon Numarası</label>
+                    <input type="tel" id="txtTelefon" name="Telephone" class="form-control custom-glass-input" placeholder="05XXXXXXXXX" maxlength="11" required />
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label form-label-custom">Şifre</label>
+                    <input type="password" name="Password" class="form-control custom-glass-input" placeholder="••••••••" required />
+                </div>
+
+                <button type="submit" class="btn btn-green w-100 py-2.5 rounded-3 fw-bold mb-2 shadow-lg fs-6">
+                    Kayıt Ol ve Giriş Yap <i class="bi bi-arrow-right-short fs-5 align-middle"></i>
+                </button>
+
+                <div class="text-center">
+                    <p class="text-muted small mb-0" style="font-size: 0.8rem;">Zaten hesabın var mı? <a href="/Account/Login" class="text-info text-decoration-none fw-semibold">Giriş Yap</a></p>
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+
+            // Dinleyici fonksiyonumuz: Gelen event'i standartlara uygun yakalar kanka
+            function sadeceRakamFiltresi(e) {
+                const charCode = e.which ? e.which : e.keyCode;
+                // Eğer basılan tuş rakam değilse girişi engelle kanka
+                if (charCode < 48 || charCode > 57) {
+                    e.preventDefault();
+                    return false;
+                }
+            }
+
+            // Elementleri ID üzerinden yakalayıp dinleyiciyi bağlıyoruz (Sıfır deprecated uyarısı!)
+            const tcInput = document.getElementById("txtTc");
+            const telInput = document.getElementById("txtTelefon");
+
+            if (tcInput) tcInput.addEventListener("keypress", sadeceRakamFiltresi);
+            if (telInput) telInput.addEventListener("keypress", sadeceRakamFiltresi);
+        });
+    </script>
+
+</body>
+</html>

@@ -20,6 +20,8 @@ namespace Kutuphane.Models
 
         [Column("givingDate")]
         public DateTime? ReturnDate { get; set; }
+        [Column("DueDate")]
+        public DateTime? DueDate { get; set; }
 
         [Column("deliveryStatus")]
         public bool IsReturned { get; set; } = false;

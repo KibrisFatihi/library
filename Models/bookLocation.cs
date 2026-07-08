@@ -10,9 +10,9 @@ namespace Kutuphane.Models
         public int Id { get; set; }
 
         [Column("raf")]
-        public string? raf { get; set; }
+        public string? Raf { get; set; }
 
         [Column("sira")]
-        public string? sira { get; set; }
+        public string? Sira { get; set; }
     }
 }
